@@ -101,12 +101,29 @@ function background(t){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(
  ctx.fillStyle='#65bd9f';ctx.beginPath();ctx.moveTo(0,H*.82);for(let x=0;x<=W+10;x+=10)ctx.lineTo(x,H*.79+Math.sin(x*.009+t*.00015+1)*20);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
  ctx.fillStyle='#f4dfab';ctx.fillRect(0,H-25,W,25);ctx.fillStyle='#d5bc86';ctx.fillRect(0,H-25,W,4);
 }
+const MATH_TOPICS=[
+ {subject:'M1',topic:'Matrices'},{subject:'M1',topic:'Jacobians'},{subject:'M1',topic:'Maxima & Minima'},
+ {subject:'M2',topic:'Laplace Transforms'},{subject:'M2',topic:'Fourier Series'},{subject:'M2',topic:'Vector Calculus'},
+ {subject:'M3',topic:'Complex Variables'},{subject:'M3',topic:'Residues'},{subject:'M3',topic:'Conformal Mapping'},
+ {subject:'DM',topic:'Graph Theory'},{subject:'DM',topic:'Recurrence Relations'},{subject:'DM',topic:'Logic'},
+ {subject:'AM',topic:'Numerical Methods'},{subject:'AM',topic:'Probability'},{subject:'AM',topic:'Interpolation'}
+];
+function drawTopicTag(x,y,w,topic){
+ if(w<42)return;
+ const label=topic.subject+' · '+topic.topic;
+ ctx.save();ctx.font='800 8px system-ui';
+ let fontSize=8;while(ctx.measureText(label).width>w-8&&fontSize>5){fontSize--;ctx.font=`800 ${fontSize}px system-ui`;}
+ const tw=Math.min(w-4,ctx.measureText(label).width+8), th=18;
+ ctx.fillStyle='#07142de8';ctx.beginPath();ctx.roundRect(x+(w-tw)/2,y,tw,th,5);ctx.fill();
+ ctx.strokeStyle='#70f0e2';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='#f4fbff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,x+w/2,y+th/2,tw-5);ctx.restore();
+}
 function drawObstacle(o){const gap=o.gap, topH=o.gapY-gap/2, botY=o.gapY+gap/2;
  const drawPanel=(x,y,w,h,img,flip)=>{ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
  if(img&&img.complete&&img.naturalWidth){let iw=img.naturalWidth,ih=img.naturalHeight;let scale=Math.max(w/iw,h/ih);let dw=iw*scale,dh=ih*scale;ctx.translate(x+w/2,y+h/2);if(flip)ctx.rotate(Math.PI);ctx.drawImage(img,-dw/2,-dh/2,dw,dh);}
- else{const gg=ctx.createLinearGradient(x,y,x+w,y+h);gg.addColorStop(0,'#5a6b92');gg.addColorStop(.5,'#344767');gg.addColorStop(1,'#233451');ctx.fillStyle=gg;ctx.fillRect(x,y,w,h);ctx.strokeStyle='#94f4e3';ctx.lineWidth=2;ctx.strokeRect(x+5,y+5,w-10,h-10);ctx.fillStyle='#ffffff15';for(let yy=y+14;yy<y+h;yy+=24)ctx.fillRect(x+8,yy,w-16,2);ctx.fillStyle='#d2e6ff';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.fillText('DODGE',x+w/2,y+h/2);}
+ else{const gg=ctx.createLinearGradient(x,y,x+w,y+h);gg.addColorStop(0,'#5a6b92');gg.addColorStop(.5,'#344767');gg.addColorStop(1,'#233451');ctx.fillStyle=gg;ctx.fillRect(x,y,w,h);ctx.strokeStyle='#94f4e3';ctx.lineWidth=2;ctx.strokeRect(x+5,y+5,w-10,h-10);ctx.fillStyle='#ffffff15';for(let yy=y+14;yy<y+h;yy+=24)ctx.fillRect(x+8,yy,w-16,2);}
  ctx.restore();ctx.fillStyle='#ffffff30';ctx.fillRect(x,y,w,4);ctx.fillStyle='#132442';ctx.fillRect(x-3,y+h-5,w+6,5);};
  const img=o.img;drawPanel(o.x,0,o.w,Math.max(0,topH),img,true);drawPanel(o.x,botY,o.w,H-botY,img,false);
+ if(o.topic){if(topH>38)drawTopicTag(o.x,Math.max(7,topH-25),o.w,o.topic);if(H-botY>38)drawTopicTag(o.x,botY+7,o.w,o.topic);}
 }
 function drawBird(t){ctx.save();ctx.translate(bird.x,bird.y);ctx.rotate(bird.rot);ctx.shadowColor='#13244250';ctx.shadowBlur=10;ctx.shadowOffsetY=4;
  if(faceImg&&faceImg.complete&&faceImg.naturalWidth){ctx.save();ctx.beginPath();ctx.arc(0,0,bird.r,0,Math.PI*2);ctx.clip();const iw=faceImg.naturalWidth,ih=faceImg.naturalHeight,scale=Math.max((bird.r*2)/iw,(bird.r*2)/ih);const dw=iw*scale,dh=ih*scale;ctx.drawImage(faceImg,-dw/2,-dh/2,dw,dh);ctx.restore();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,bird.r,0,Math.PI*2);ctx.stroke();}
@@ -119,7 +136,7 @@ function flap(){if(state==='ready'){startGame();return;}if(state==='over')return
 function startGame(){state='playing';score=0;elapsed=0;spawn=.35;obstacles=[];particles=[];bird.y=H*.43;bird.vy=0;bird.rot=0;scoreTop.textContent='0';statusText.textContent='IN FLIGHT';overlay.classList.add('hidden');startBtn.textContent='Play again →';startGameplayAudio();flap();}
 function gameOver(){if(state!=='playing')return;state='over';best=Math.max(best,score);statusText.textContent='FLIGHT ENDED';stopGameplayAudio();playOneShot(overAudio);modalTitle.textContent=score>=10?'Legendary flight!':'Nice try, Deekshith!';modalText.textContent=`You scored ${score} point${score===1?'':'s'}. Best score: ${best}. Ready for another flight?`;startBtn.textContent='Fly again  ↻';overlay.classList.remove('hidden');}
 function update(dt){elapsed+=dt*1000;if(state==='playing'){bird.vy+=H*1.28*dt;bird.y+=bird.vy*dt;bird.rot=clamp(bird.vy/(H*.75),-.45,1.15);
- spawn-=dt;if(spawn<=0){const gap=clamp(H*.34,145,210),margin=gap/2+26;obstacles.push({x:W+24,w:clamp(W*.13,56,83),gapY:margin+Math.random()*(H-25-margin*2),gap,img:obstacleImgs.length?obstacleImgs[Math.floor(Math.random()*obstacleImgs.length)]:null,passed:false});spawn=clamp(1.5-score*.012,.95,1.5);}
+ spawn-=dt;if(spawn<=0){const gap=clamp(H*.34,145,210),margin=gap/2+26;obstacles.push({x:W+24,w:clamp(W*.13,56,83),gapY:margin+Math.random()*(H-25-margin*2),gap,topic:MATH_TOPICS[Math.floor(Math.random()*MATH_TOPICS.length)],img:obstacleImgs.length?obstacleImgs[Math.floor(Math.random()*obstacleImgs.length)]:null,passed:false});spawn=clamp(1.5-score*.012,.95,1.5);}
  for(const o of obstacles){o.x-=W*.43*dt;const topH=o.gapY-o.gap/2,botY=o.gapY+o.gap/2;if(!o.passed&&o.x+o.w<bird.x){o.passed=true;score++;scoreTop.textContent=score;}}
  obstacles=obstacles.filter(o=>o.x+o.w>-10);
  if(bird.y-bird.r<0||bird.y+bird.r>H-25)gameOver();
