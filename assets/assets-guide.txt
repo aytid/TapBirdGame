@@ -1,0 +1,38 @@
+DEEKSHITH TAP BIRD - ASSET GUIDE
+================================
+
+Replace any file below with your own, keeping the EXACT file name. No code changes needed.
+If a file is missing or fails to load, the game uses a built-in fallback and keeps working.
+
+FILE               WHAT IT IS                          RECOMMENDED
+-----------------  ----------------------------------  ------------------------------------------
+friend.png         The player character (face)         Transparent PNG, cropped tightly around the
+                                                       face. About 400 px tall is plenty. Any aspect
+                                                       ratio works (it is never stretched).
+                                                       Fallback: a cartoon bird.
+
+obstacle-1.png     Obstacle artwork, variant 1         Transparent PNG. A HORIZONTAL image (like the
+obstacle-2.png     Obstacle artwork, variant 2         ruler) is automatically rotated to vertical and
+                   (optional)                          tiled; a VERTICAL image is tiled as it is.
+                                                       Use roughly 3:1 (or 1:3) artwork, ~900 px long.
+                                                       Never stretched. Fallback: a stack of textbooks.
+                                                       Tip: avoid black/solid backgrounds - they will
+                                                       show as a solid box.
+
+gameplay.mp3       Background music (loops while       MP3, any normal bitrate (128-192 kbps is fine).
+                   playing; paused with the game)      Short loops of 15-60 s work well.
+
+gameover.mp3       Played once when the bird crashes   MP3, short (1-3 s).
+
+Supported image format: PNG (use PNG so transparent edges are kept). The file names must end in .png.
+Supported audio format: MP3 (works in every modern browser).
+
+How to replace an asset
+-----------------------
+1. Prepare your file (see table above).
+2. Give it the exact name from the table.
+3. Drop it into this folder, overwriting the old file.
+4. Reload index.html (press Ctrl+F5 / Cmd+Shift+R to bypass the browser cache).
+
+Note: Deekshith_Tap_Bird_Standalone.html (the single-file version) has the original assets baked in,
+so replacing files here does not change it. Use index.html when you want to swap assets.
