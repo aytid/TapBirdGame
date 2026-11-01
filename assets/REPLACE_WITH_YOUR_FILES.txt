@@ -1,0 +1,10 @@
+Replace the files below with your own files, keeping these exact names:
+- friend.png       Your friend's face photo (PNG/JPG/WEBP; rename it to friend.png)
+- obstacle-1.png   First custom obstacle image
+- obstacle-2.png   Second custom obstacle image (optional)
+- gameplay.mp3    Audio that loops while playing
+- gameover.mp3    Audio that plays after a collision
+
+Keep index.html and the assets folder together. Open index.html in a modern browser.
+If an asset is missing, the game uses its built-in fallback artwork/silent audio.
+For best results, use a square face image and transparent PNG obstacle images.
